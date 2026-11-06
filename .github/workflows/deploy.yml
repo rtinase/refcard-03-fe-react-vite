@@ -13,7 +13,7 @@ env:
 jobs:
   test:
     name: Test
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, local-docker]
     steps:
       - uses: actions/checkout@v4
 
@@ -30,7 +30,7 @@ jobs:
 
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, local-docker]
     needs: test
     steps:
       - uses: actions/checkout@v4
@@ -50,6 +50,7 @@ jobs:
           VITE_IMGS: ${{ vars.VITE_IMGS || 'items' }}
 
       - name: Build-Artefakt hochladen
+        continue-on-error: true   # Artefakt-Speicherquota des Accounts ist erschoepft; der Deploy-Job braucht das Artefakt nicht
         uses: actions/upload-artifact@v4
         with:
           name: dist
@@ -58,7 +59,7 @@ jobs:
 
   deploy-ecs:
     name: Image nach ECR pushen und ECS-Service aktualisieren
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, local-docker]
     needs: build
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     permissions:
@@ -85,7 +86,7 @@ jobs:
           ECR_REPOSITORY: biztrips
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build \
+          docker build --platform linux/amd64 \
             --build-arg VITE_API_BASE_URL="${{ vars.VITE_API_BASE_URL }}" \
             --build-arg VITE_IMGS="${{ vars.VITE_IMGS || 'items' }}" \
             -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" \
