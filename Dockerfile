@@ -1,6 +1,6 @@
 # --- Stage 1: Build ---
 # Node wird nur zum Bauen gebraucht und landet nicht im finalen Image.
-FROM node:24-alpine AS build
+FROM --platform=$BUILDPLATFORM node:24-alpine AS build
 WORKDIR /app
 
 # Lockfile zuerst kopieren, damit der npm-ci-Layer nur bei Dependency-Änderungen neu gebaut wird.

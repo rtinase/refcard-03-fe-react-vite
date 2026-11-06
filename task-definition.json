@@ -4,11 +4,11 @@
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "256",
   "memory": "512",
-  "executionRoleArn": "arn:aws:iam::211125356770:role/LabRole",
+  "executionRoleArn": "arn:aws:iam::898624354809:role/LabRole",
   "containerDefinitions": [
     {
       "name": "biztrips",
-      "image": "211125356770.dkr.ecr.us-east-1.amazonaws.com/biztrips:latest",
+      "image": "898624354809.dkr.ecr.us-east-1.amazonaws.com/biztrips:latest",
       "portMappings": [{ "containerPort": 80, "protocol": "tcp" }],
       "essential": true,
       "logConfiguration": {
